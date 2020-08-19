@@ -14,9 +14,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 <br>
 
-<div style="text-align: justify">
-En Chile, la cobertura de las jubilaciones se estructura bajo un sistema de capitalización individual (Administradora de Fondos de Pensiones), creado durante la dictadura de Augusto Pinochet, que consiste en el ahorro de ingresos individuales administrado por instituciones financieras privadas en pos de generar utilidades. Sin embargo, las dificultades de empleo e ingresos se terminan por acarrear irremediablemente hasta la vejez y, por ende, estas no logran solucionar de raíz las desigualdades propias del sistema.
-<div/>
+<div style="text-align:justify"> En Chile, la cobertura de las jubilaciones se estructura bajo un sistema de capitalización individual (Administradora de Fondos de Pensiones), creado durante la dictadura de Augusto Pinochet, que consiste en el ahorro de ingresos individuales administrado por instituciones financieras privadas en pos de generar utilidades. Sin embargo, las dificultades de empleo e ingresos se terminan por acarrear irremediablemente hasta la vejez y, por ende, estas no logran solucionar de raíz las desigualdades propias del sistema. <div/>
 
 <br>
 
