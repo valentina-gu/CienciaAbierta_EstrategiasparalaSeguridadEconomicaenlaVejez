@@ -3,6 +3,7 @@ title:"Readme: Estrategias para la seguridad económica en la vejez"
 
 date: "31-07-2020"
 output: html_document
+<div style="text-align: jusrify"> your-text-here </div>
 ---
 
 ```{r setup, include=FALSE}
