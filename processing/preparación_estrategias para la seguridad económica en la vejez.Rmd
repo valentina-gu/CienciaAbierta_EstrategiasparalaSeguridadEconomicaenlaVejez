@@ -1,0 +1,244 @@
+---
+title: "Preparación de datos: Estrategias para la Seguridad Económica en la Vejez"
+author: "Josefina Carrasco, Isidora Didier, Valentina Gonzalez, Karen Sepúlveda y Martina Silva"
+date: "26/6/2020"
+output: 
+    html_document:
+      toc: true
+      number_sections: TRUE
+      highlight: pygments
+      toc_float:
+        collapsed: false
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+*** 
+
+## Recodificación de datos
+
+A continuación, se cargaran los paquetes y base de datos para los calculos posteriores.
+
+
+```{r message=FALSE, warning=FALSE, paged.print=FALSE, r,message=FALSE}
+pacman::p_load(readxl, 
+              psych, 
+              dplyr,  
+              car) 
+
+```
+
+Abriremos la base de datos y se recodificaran variables.
+
+
+```{r}
+
+#Carga de base de datos
+data <- read_excel("../input/data/original/data.xlsx")
+
+#Nueva base de datos con variables recodificadas
+data2 <-data.frame(genero=rep(NA,nrow(data)))
+
+```
+
+Se cambia la clase de `data` para poder utilizar el paquete `car` en la recodificación
+
+```{r}
+data<-as.data.frame(data)
+```
+
+
+Recodificación de las variables en nuevas variables de `data2`.
+
+* Recodificación para las columnas de caracterizacion: [`genero`] (género), [`edad`] (edad), [`ecivil`] (estado civil), [`comuna`] (comuna)
+
+```{r}
+data2$genero <- data[,1]
+data2$edad <- data[,2]
+data2$ecivil <- data[,3]
+data2$comuna <- data[,4]
+data2$comuna <- car::recode(data[,4], "'PAC'='Pedro Aguirre Cerda'")
+```
+
+* Recodificación de la variable [`subvención`]
+
+```{r}
+data2$s1 <- data[,33]
+data2$s2 <- data[,34]
+data2$s3 <- data[,35]
+```
+
+* Recodificación de la variable [`redes_sociales`]
+
+```{r}
+data2$r1 <- 0
+data2$r2 <- 0
+data2$r3 <- 0
+data2$r4 <- 0
+data2$r5 <- 0
+data2$r6 <- 0
+data2$r7 <- 0
+```
+
+* Recodificación de la variable [`pension`]
+
+```{r}
+data2$p1 <- data[,7]
+data2$p2 <- data[,8]
+```
+
+* Recodificación de la variable [`trabajo`]
+
+```{r}
+data2$t1 <- data[,11]
+data2$t2 <- data[,12]
+data2$t3 <- data[,14]
+data2$t4 <- data[,19]
+
+```
+
+Para efectos de la investigación, la variable [`inversion`] no requiere recodificación.
+
+***
+
+## Cálculo de índices para cada variable
+
+A continuación se calcularán los índices correspondiente a cada estrategia para así calcular con proporcionalidad cada estrategia debido a la diferencia en la cantidad de preguntas por estrategias y al número de categorias de respuesta por pregunta.
+
+* Cración de índice para la variable [`pension`]
+
+```{r}
+data2$p1 <-car::recode(data[,7], "'Muy de acuerdo'=4; 'De acuerdo'=3; 'Ni de acuerdo ni en desacuerdo'=2; 'En desacuerdo'=1; 'Muy en desacuerdo'=0; 'No sabe/ No responde'=0; NA=0")
+data2$p2 <- car::recode(data[,8], "'Muy de acuerdo'=4; 'De acuerdo'=3; 'Ni de acuerdo ni en desacuerdo'=2; 'En desacuerdo'=1; 'Muy en desacuerdo'=0; 'No sabe/ No responde'=0; NA=0")
+
+data2$p1 <- (data2$p1-min(data2$p1))/(max(data2$p1)-min(data2$p1))
+data2$p2 <- (data2$p2-min(data2$p2))/(max(data2$p2)-min(data2$p2))
+
+data2$pension <- (data2$p1+data2$p2)/2
+
+pension <- data2$pension
+```
+
+* Creación de índice para la variable [`trabajo`]
+
+```{r}
+data2$t1 <- car::recode(data[,11], "'Mucho'=3; 'Más o menos'=2; 'Poco'=1; 'Nada'=0; 'No sabe/ No responde'=0; NA=0")
+data2$t2 <- car::recode(data[,12], "'Mucho'=3; 'Más o menos'=2; 'Poco'=1; 'Nada'=0; 'No sabe/ No responde'=0; NA=0")
+data2$t3 <- car::recode(data[,14], "'Muy de acuerdo'=4; 'De acuerdo'=3; 'Ni de acuerdo ni en desacuerdo'=2; 'En desacuerdo'=1; 'Muy en desacuerdo'=0; 'No sabe/ No responde'=0; NA=0")
+data2$t4 <- car::recode(data[,19], "'Muy de acuerdo'=1; 'De acuerdo'=2; 'Ni de acuerdo ni en desacuerdo'=3; 'En desacuerdo'=4; 'Muy en desacuerdo'=0; 'No sabe/ No responde'=0; NA=0")
+
+data2$t1 <- (data2$t1-min(data2$t1))/(max(data2$t1)-min(data2$t1))
+data2$t2 <- (data2$t2-min(data2$t2))/(max(data2$t2)-min(data2$t2))
+data2$t3 <- (data2$t3-min(data2$t3))/(max(data2$t3)-min(data2$t3))
+data2$t4 <- (data2$t4-min(data2$t4))/(max(data2$t4)-min(data2$t4))
+
+data2$trabajo <- (data2$t1+data2$t2+data2$t3+data2$t4)/4
+
+trabajo <- data2$trabajo
+```
+
+* Creación de índice para la variable [`inversion`]
+
+```{r}
+data2$i1 <- car::recode(data[,23], "'Muy de acuerdo'=4; 'De acuerdo'=3; 'Ni de acuerdo ni en desacuerdo'=2; 'En desacuerdo'=1; 'Muy en desacuerdo'=0; 'No sabe/ No responde'=0; NA=0")
+data2$i2 <- car::recode(data[,25], "'Muy de acuerdo'=4; 'De acuerdo'=3; 'Ni de acuerdo ni en desacuerdo'=2; 'En desacuerdo'=1; 'Muy en desacuerdo'=0; 'No sabe/ No responde'=0; NA=0")
+data2$i3 <- car::recode(data[,23], "'Muy de acuerdo'=4; 'De acuerdo'=3; 'Ni de acuerdo ni en desacuerdo'=2; 'En desacuerdo'=1; 'Muy en desacuerdo'=0; 'No sabe/ No responde'=0; NA=0")
+
+data2$i1 <- (data2$i1-min(data2$i1))/(max(data2$i1)-min(data2$i1))
+data2$i2 <- (data2$i2-min(data2$i2))/(max(data2$i2)-min(data2$i2))
+data2$i3 <- (data2$i3-min(data2$i3))/(max(data2$i3)-min(data2$i3))
+
+data2$inversion <- (data2$i1+data2$i2+data2$i3)/3
+
+inversion <- data2$inversion
+```
+
+* Creación de índice para la variable [`subvencion`]
+
+```{r}
+data2$s1 <- car::recode(data[,33], "'Nada'=3; 'Poco'=2; 'Algo'=1; 'Mucho'=0; 'No sabe/ No responde'=0; NA=0")
+data2$s2 <- car::recode(data[,34], "'Nada'=3; 'Poco'=2; 'Algo'=1; 'Mucho'=0; 'No sabe/No responde'=0; NA=0")
+data2$s3 <- car::recode(data[,35], "'Mucho'=3; 'Algo'=2; 'Poco'=1; 'Nada'=0; 'No sabe/ No responde'=0; NA=0")
+
+data2$s1 <- (data2$s1-min(data2$s1))/(max(data2$s1)-min(data2$s1))
+data2$s2 <- (data2$s2-min(data2$s2))/(max(data2$s2)-min(data2$s2))
+data2$s3 <- (data2$s3-min(data2$s3))/(max(data2$s3)-min(data2$s3))
+
+data2$subvencion<- (data2$s1+data2$s2+data2$s3)/3
+
+subvencion <- data2$subvencion
+```
+
+* Creación de índice para la variable [`redes_sociales`]
+
+```{r results= FALSE}
+
+#Indice redes
+
+rowSums(data[,36:42]=="Vivo en su casa", na.rm=T)
+
+data2$rcasa <- rowSums(data[,36:42]=="Vivo en su casa", na.rm=T)
+
+data2$r1[grepl("Vivo en su casa",data[,36])] <- 0
+data2$r1[grepl("No recibe apoyo",data[,36])] <- 0
+data2$r1[grepl("Apoyo no monetario",data[,36])] <- 1
+data2$r1[grepl("Apoyo monetario",data[,36])] <- 2
+
+data2$r2[grepl("Vivo en su casa",data[,37])] <- 0
+data2$r2[grepl("No recibe apoyo",data[,37])] <- 0
+data2$r2[grepl("Apoyo no monetario",data[,37])] <- 1
+data2$r2[grepl("Apoyo monetario",data[,37])] <- 2
+
+data2$r3[grepl("Vivo en su casa",data[,38])] <- 0
+data2$r3[grepl("No recibe apoyo",data[,38])] <- 0
+data2$r3[grepl("Apoyo no monetario",data[,38])] <- 1
+data2$r3[grepl("Apoyo monetario",data[,38])] <- 2
+
+data2$r4[grepl("Vivo en su casa",data[,39])] <- 0
+data2$r4[grepl("No recibe apoyo",data[,39])] <- 0
+data2$r4[grepl("Apoyo no monetario",data[,39])] <- 1
+data2$r4[grepl("Apoyo monetario",data[,39])] <- 2
+
+data2$r5[grepl("Vivo en su casa",data[,40])] <- 0
+data2$r5[grepl("No recibe apoyo",data[,40])] <- 0
+data2$r5[grepl("Apoyo no monetario",data[,40])] <- 1
+data2$r5[grepl("Apoyo monetario",data[,40])] <- 2
+
+data2$r6[grepl("Vivo en su casa",data[,41])] <- 0
+data2$r6[grepl("No recibe apoyo",data[,41])] <- 0
+data2$r6[grepl("Apoyo no monetario",data[,41])] <- 1
+data2$r6[grepl("Apoyo monetario",data[,41])] <- 2
+
+data2$r7[grepl("Vivo en su casa",data[,42])] <- 0
+data2$r7[grepl("No recibe apoyo",data[,42])] <- 0
+data2$r7[grepl("Apoyo no monetario",data[,42])] <- 1
+data2$r7[grepl("Apoyo monetario",data[,42])] <- 2
+
+data2[,c("r1","r2","r3","r4","r5","r6","r7")]
+
+data2$r1 <- (data2$r1-min(data2$r1))/(max(data2$r1)-min(data2$r1))
+data2$r2 <- (data2$r2-min(data2$r2))/(max(data2$r2)-min(data2$r2))
+data2$r3 <- (data2$r3-min(data2$r3))/(max(data2$r3)-min(data2$r3))
+data2$r4 <- (data2$r4-min(data2$r4))/(max(data2$r4)-min(data2$r4))
+data2$r5 <- (data2$r5-min(data2$r5))/(max(data2$r5)-min(data2$r5))
+data2$r6 <- (data2$r6-min(data2$r6))/(max(data2$r6)-min(data2$r6))
+data2$r7 <- (data2$r7-min(data2$r7))/(max(data2$r7)-min(data2$r7))
+
+data2$redes_sociales <- (data2$rcasa+data2$r1+data2$r2+data2$r3+data2$r4+data2$r5+data2$r6+data2$r7)/8
+
+redes_sociales <- data2$redes_sociales
+```
+
+A continuación, se guardará el dataset procesado llamadolo `data2` y guardandolo en la carpeta *input>data>proc*, según los protocolos IPO.
+
+```{r}
+save(data2, file = "../input/data/proc/data2.RData")
+```
+
+
+
+
+
+

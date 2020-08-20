@@ -1,0 +1,873 @@
+---
+title: "Análisis de datos: Estrategias para la Seguridad Económica en la Vejez"
+
+author: "Josefina Carrasco, Isidora Didier, Valentina Gonzalez, Karen Sepúlveda y Martina Silva"
+
+date: "26/6/2020"
+output: 
+    html_document:
+      toc: true
+      highlight: pygments
+      toc_float:
+        collapsed: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(cache=FALSE, 
+                      warning = FALSE, 
+                      message = FALSE) 
+
+Sys.setlocale("LC_ALL","ES_ES.UTF-8")
+
+```
+
+***
+
+# Testeo de hipótesis
+
+<br>
+
+## Hipótesis
+
+<br>
+
+Para realizar el testeo, plantearemos tres hipótesis, dentro de las cuales, la primera y la segunda presentan tres sub hipótesis: 
+
+* H1:Existen diferencias en el uso de estrategias según la clase social (comuna).
+
+  * H1.1:la clase alta usa menos la estrategia de Trabajo que la clase baja.
+  
+  * H1.2:la clase alta usa menos la estrategia de Redes Sociales que la clase baja.
+  
+  * H1.3:la clase alta usa más la estrategia de Inversión que la clase baja.
+
+
+
+* H2:Existen diferencias en el uso de estrategias según el género. 
+
+  * H2.1:los hombres usan menos la estrategia de Redes sociales que las mujeres.
+  
+  * H2.2:los hombres usan menos la estrategia de Subvenciones que las mujeres.
+  
+  * H2.3:los hombres usan más la estrategia de Trabajo que las mujeres.  
+
+
+* H3: Existen más diferencias de clase en hombres que en mujeres. En otras palabras, hay más diferencias entre hombre sde clase alta y clase baja, que las diferencias que existirán entre mujeres de clase alta y clase baja.
+
+***
+
+Cargaremos los paquetes y la base de datos preparada (`data2`)
+
+```{r}
+pacman::p_load(readxl, 
+              psych, 
+              dplyr,  
+              car,
+              stargazer,
+              ggplot2,
+              effsize)
+```
+```{r}
+load("../input/data/proc/data2.RData")
+```
+
+<br>
+
+A continuación, se realizará el testeo de las hipótesis planteadas anteriormente. Para esto se llevará a cabo un análisis univariado y bivariado y para cada hipótesis se calculará el Test de Welch, Test de Levene y D de Cohen, según corresponda.
+
+<br>
+
+## Hipótesis teórica 1: uso de estrategia según clase social. 
+
+<br>
+
+Para comparar el uso de estrategias según la clase social, se utilizarán pruebas T Student de una cola y Test de Welch de una cola; el primero, en caso de poder asumir homogeneidad de varianzas, y el segundo, si es que no se puede asumir este supuesto (evaluado mediante el Test de Levene). Luego, si se rechaza la hipótesis nula, se utilizará el estadístico D de Cohen para medir el tamaño del efecto. Los resultados se pueden observar en la Tabla 5.
+En esta línea, para comparar las estrategias utilizadas según la clase social, la hipótesis (1) se desglosa en 3 hipótesis 
+
+* Hipótesis 1.1: La clase alta usa menos [`trabajo`] que la clase baja. 
+* Hipótesis 1.2: La clase alta usa menos [`redes_sociales`] que la clase baja.
+* Hipótesis 1.3: La clase alta usa más [`inversion`] que la clase baja.
+
+<br>
+
+### Hipótesis 1.1: La clase alta usa menos [`trabajo`] que la clase baja
+
+<br>
+
+#### 1. Test de Levene para testear homogeneidad de varianzas 
+
+<br>
+
+Ahora, se realizará el Test de Levene con el comando `leveneTest` según las hipótesis planteadas anteriormente: 
+
+* Hipótesis nula: La varianza de [`trabajo`] en la clase alta es igual a la de la clase baja. 
+* Hipótesis alternativa: La varianza de [`trabajo`] en la clase alta es distinta la de la clase baja.
+
+
+```{r}
+leveneTest(trabajo ~ comuna, center=mean, data = data2)
+```
+
+
+El nivel de significancia asociado al estadistico de Levene (=0.7232) es mayor a 0.05. En consecuencia, no se rechaza la hipótesis nula, por lo que asumiremos igualdad de varianzas. Por lo tanto procederemos a realizar una Prueba T student (de una cola)
+
+<br>
+
+#### 2. Prueba T student de una cola
+
+<br>
+
+Se realizará una Prueba T student con el comando `t.test` según las hipótesis planteadas anteriormente: 
+
+* Hipotesis nula: La media de [`trabajo`] en la clase alta es igual a la media de la clase baja 
+* Hipotesis alternativa: La media de [`trabajo`] en la clase alta es menor a la media de la clase baja
+
+
+```{r}
+t.test(trabajo ~ comuna, data=data2, conf.level=0.95,alternative="less",var.equal = T)
+```
+
+```{r}
+t.test(trabajo ~ comuna, data=data2, conf.level=0.9,alternative="less",var.equal = T)
+```
+
+
+El nivel de significancia asociado al estadistico T (=0.6714) es mayor a 0.05, por lo que no se rechaza la hipotesis nula.En consecuencia, no existe evidencia suficiente para decir que la media de [`trabajo`] de la clase alta es menor a la de la clase baja
+
+<br>
+
+### Hipotesis 1.2: La clase alta usa menos [`redes_sociales`] que la clase baja
+
+<br>
+
+#### 1. Test de Levene para testear igualdad de varianzas 
+
+<br>
+
+Ahora, se realizará el Test de Levene con el comando `leveneTest` según las hipótesis planteadas anteriormente: 
+
+* Hipotesis nula: La varianza de [`redes_sociales`] en la clase alta es igual a la de la clase baja
+* Hipotesis alternativa: La varianza de [`redes_sociales`] en la clase alta es distinta a la de la clase baja
+
+
+```{r}
+leveneTest(redes_sociales ~ comuna, center=mean, data = data2) 
+```
+
+
+Interpretacion: el nivel de significancia del estadistico de Levene (=0.0247) es menor que 0.05, por lo tanto rechazamos la hipotesis nula.En consecuencia, no asumimos igualdad de varianzas. Por lo tanto, se realizará un test de Welch (de 1 cola)
+
+<br>
+
+#### 2. Test de Welch de una cola
+
+<br>
+
+Ahora, se realizará el Test de Welch con el comando `t.test` según las hipótesis planteadas anteriormente: 
+
+* Hipotesis nula: La media de [`redes_sociales`] es igual en la clase alta y la clase baja
+* Hipotesis alternativa: La media de [`redes_sociales`] de la clase alta es menor a la de la clase baja
+
+
+```{r}
+#95% de confianza
+t.test(redes_sociales ~ comuna, data=data2, conf.level=0.95,alternative="less",var.equal = F)
+
+#99% de confianza
+t.test(redes_sociales ~ comuna, data=data2, conf.level=0.9,alternative="less",var.equal = F)
+
+```
+
+
+El nivel de significancia del estadistico T (=0.0017) es menor que 0.05, por lo que rechazamos la hipotesis nula. En consecuencia, con un 95% de confianza la media de [`redes_sociales`] de la clase alta es menor a la de la clase baja. Por lo tanto, se realizará una prueba de tamaño-efecto para medir la intensidad de esta asociación.
+
+<br>
+
+#### 3. D de Cohen
+
+<br>
+
+A continuación, se realizará la prueba D de Cohen con el comando `cohen.d` según las hipótesis planteadas anteriormente.
+
+```{r}
+cohen.d(data2$redes_sociales, data2$comuna, alpha=.05,std=F)
+
+cohen.d(data2$redes_sociales, data2$comuna, alpha=.1,std=F)
+```
+
+
+En este caso, el resultado de la prueba es 0.7913, lo cual es considerado como efecto medio. 
+
+<br>
+
+### Hipotesis 1.3: La clase alta usa más [`inversion`] que la clase baja
+
+<br>
+
+#### 1. Test de Levene
+
+<br>
+
+Realizaremos el Test de Levene con el comando `leveneTest` según las hipótesis planteadas anteriormente: 
+
+* Hipotesis nula: La varianza de [`inversion`] en la clase alta es igual a la de la clase baja
+* Hipotesis alternativa: La varianza de [`inversion`] en la clase alta es distinta a la de la clase baja
+
+
+```{r}
+leveneTest(inversion ~ comuna, center=mean, data = data2)
+```
+ 
+
+El nivel de significancia del estadistico de Levene (=0.1974) es mayor que 0.05, por lo tanto no rechazamos la hipotesis nula.En consecuencia, asumimos igualdad de varianzas. Por lo tanto, se realizará una Prueba T Student (de 1 cola)
+
+<br>
+
+#### 2. Prueba T Student (de 1 cola)
+
+<br>
+
+Se realizará una Prueba T student con el comando `t.test` según las hipótesis planteadas anteriormente: 
+
+* Hipotesis nula: La media de [`inversion`] es igual en la clase alta y baja
+* Hipotesis alternativa: La media de [`inversion`] de la clase alta es mayor a la de la clase baja
+
+
+```{r}
+t.test(inversion ~ comuna, data=data2, conf.level=0.95,alternative="greater",var.equal = T)
+t.test(inversion ~ comuna, data=data2, conf.level=0.9,alternative="greater",var.equal = T)
+```
+
+
+El nivel de significancia del estadistico t (=0.0334) es menor a 0.05, por lo que se rechaza la hipotesis nula.En consecuencia, con un 95% de confianza afirmamos que la media de [`inversion`] de la clase alta es mayor a la de la clase baja.
+
+<br>
+
+#### 3. D de Cohen
+
+<br>
+
+A continuación, se realizará la prueba D de Cohen con el comando `cohen.d` según las hipótesis planteadas anteriormente.
+
+
+```{r}
+cohen.d(data2$inversion, data2$comuna, alpha=.05,std=T)
+```
+
+
+En este caso, el resultado de la prueba D de Cohen es 0.4822, lo cual señala un efecto pequeño. 
+
+<br>
+
+## Hipotesis teórica 2: estrategias según género. 
+
+<br>
+
+Para comparar el uso de estrategias según [`genero`], al igual que con la Hipótesis 1, se utilizaron pruebas T student y Test de Welch de una cola. Luego, en caso de rechazar la hipótesis nula, se utiliza el estadístico D de Cohen para medir el tamaño del efecto.
+Para hacer este análisis, la hipótesis 2 se desglosa en 3 hipótesis :
+
+
+* Hipótesis 2.1: Los hombres usan menos [`redes_sociales`] que las mujeres.
+* Hipótesis 2.2: Los hombres usan menos [`subvencion`] que las mujeres.
+* Hipótesis 2.3: Los hombres usan más el [`trabajo`] que las mujeres.
+
+<br>
+
+### Hipótesis 2.1: Los hombres usan menos [`redes_sociales`] que las mujeres
+
+<br>
+
+#### 1. Test de Levene para testear homogeneidad de varianzas 
+
+<br>
+
+A continuación, calcularemos el Test de Levene con el comando `leveneTest` según las hipótesis mencionadas:
+
+* Hipótesis nula: Las varianzas de [`redes_sociales`] son iguales en hombres y mujeres
+* Hipótesis alternativa: Las varianzas de [`redes_sociales`] son distintas en hombres y mujeres
+
+
+```{r}
+leveneTest(redes_sociales ~ genero, center=mean, data = data2) 
+```
+
+
+El nivel de significancia del estadistico de Levene (=0.0247) es menor que 0.05, por lo tanto rechazamos la hipotesis nula.En consecuencia, no asumimos igualdad de varianzas. Por lo tanto, se realizará un test de Welch (de una cola)
+
+<br>
+
+#### 2. Test de Welch (de una cola)
+
+<br>
+
+Calcularemos el Test de Welch de una cola con el comando `t.test` según las hipótesis planteadas:
+
+* Hipotesis nula: La media de [`redes_sociales`] es igual en hombres y mujeres
+* Hipotesis alternativa: La media de [`redes_sociales`] de hombres es menor a la de las mujeres
+
+
+```{r}
+t.test(redes_sociales ~ genero, data=data2, conf.level=0.95,alternative="less",var.equal = F)
+t.test(redes_sociales ~ genero, data=data2, conf.level=0.9,alternative="less",var.equal = F)
+```
+
+
+El nivel de significancia del estadistico T (=0.0017) es menor que 0.05, por lo que rechazamos la hipotesis nula. En consecuencia, con un 95% de confianza podemos afirmar que la media de [`redes_sociales`] es menor en hombres respecto a las mujeres.
+
+<br>
+
+#### 3. D de Cohen
+
+<br>
+
+Ahora, realizaremos la prueba de D de Cohen (`cohen.d`) para calcular el tamaño del efecto. 
+
+```{r}
+cohen.d(data2$redes_sociales, data2$genero, alpha=.05,std=F)
+```
+
+
+El tamaño del efecto es mediano ya que su resultado es 0.7913.
+
+<br>
+
+### Hipotesis 2.2: Los hombres usan menos [`subvencion`] que las mujeres
+
+<br>
+
+#### 1. Test de Levene para testear homogeneidad de varianzas
+
+<br>
+
+Ahora, calcularemos el Test de Levene (`leveneTest`) según las hipótesis planteadas anteriormente: 
+
+* Hipotesis nula: Las varianzas de [`subvencion`] son iguales en hombres y mujeres
+* Hipotesis alternativa: Las varianzas de [`subvencion`] son distintas en hombres y mujeres
+
+
+```{r}
+leveneTest(subvencion ~ genero, center=mean, data = data2) 
+```
+
+
+El nivel de significancia asociado al estadistico de Levene es menor a 0.05, por lo que rechazamos hipótesis nula. En consecuencia, no asumimos igualdad de varianzas. Por lo tanto, realizaremos test de Welch (de una cola)
+
+<br>
+
+#### 2. Test de Welch (una cola)
+
+<br>
+
+Realizaremos el Test de Welch de una cola con el comando `t.test` según las hipótesis ya planteadas:
+
+* Hipotesis nula: Las medias de [`subvencion`] son iguales en hombres y mujeres
+* Hipotesis alternativa: La media de [`subvencion`] en hombres es menor a la de las mujeres
+
+
+```{r}
+t.test(subvencion ~ genero, data=data2, conf.level=0.95,alternative="less",var.equal = F)
+t.test(subvencion ~ genero, data=data2, conf.level=0.9,alternative="less",var.equal = F)
+```
+
+
+El nivel de significacion asociado al estadistico t (=0.0014) es menor a 0.05, por lo que rechazamos hipótesis nula. En consecuencia, con un 95% de confianza afirmamos que la media de [`subvencion`] es menor en hombres respecto a las mujeres
+
+<br>
+
+#### 3. D de Cohen
+
+<br>
+
+A continuación, aplicaremos el test D de Cohen para medir el tamaño del efecto. 
+
+```{r}
+cohen.d(data2$subvencion, data2$genero, alpha=.05,std=F)
+```
+
+
+Según el resultado (0.8187) el tamaño del efecto es grande. 
+
+<br>
+
+### Hipótesis 2.3: Los hombres usan más el [`trabajo`] que las mujeres
+
+<br>
+
+#### 1. Test de Levene 
+
+<br>
+
+Ahora, realizaremos el Test de Levene (`leveneTest`) para testear homogeneidad de varianzas según las siguientes hipótesis:
+
+* Hipotesis nula: Las varianzas de [`trabajo`] son iguales en hombres y mujeres
+* Hipótesis alternativa: Las varianzas de [`trabajo`] son distintas en hombres y mujeres
+
+
+```{r}
+leveneTest(trabajo ~ genero, center=mean, data = data2) 
+```
+
+
+El nivel de significancia asociado al estadístico de Levene (=0.0004) es menor a 0.05, por lo que rechazamos hipótesis nula. En consecuencia, no asumimos homogeneidad de varianzas. Realizaremos test de Welch (de una cola)
+
+<br>
+
+#### 2. Test de Welch (de una cola)
+
+<br>
+
+Continuamos realizando el Test de Welch de una cola con el comando `t.test` siguiendo las hipótesis mencionadas anteriormente:
+
+* Hipotesis nula: Las medias de [`trabajo`] son iguales en hombres y mujeres
+* Hipotesis alternativa: La media de [`trabajo`] de hombres es mayor que la de las mujeres
+
+
+```{r}
+t.test(trabajo ~ genero, data=data2, conf.level=0.95,alternative="greater",var.equal = F)
+t.test(trabajo ~ genero, data=data2, conf.level=0.9,alternative="greater",var.equal = F)
+```
+
+
+El nivel de significia asociado al estadistico t (=0.0255) es menor a 0.05, por lo que rechazamos hipótesis nula. En consecuencia, con un 95% de confianza afirmamos que la media de [`trabajo`] es mayor en hombres que en mujeres.
+
+<br>
+
+#### 3. D de Cohen
+
+<br>
+
+Realizamos la prueba D de Cohen con el comando `cohen.d` para calcular el tamaño del efecto.
+
+```{r}
+cohen.d(data2$trabajo, data2$genero, alpha=.05,std=F)
+```
+
+En este caso, se tienen un tamaño medio del efecto con un resultado de 0.5149.
+
+<br>
+
+## Hipotesis teórica 3: estrategias según clase social y género.
+
+<br>
+
+En relación con la hipótesis 3, se examinará si existen más diferencias en el uso de estrategias entre hombres de distintas clases sociales, o bien, entre mujeres de distintas clases sociales. Para realizar esto, se realizaron pruebas T student de dos colas, en caso de poder asumir homogeneidad de varianzas, y pruebas de Welch de dos colas, en caso de no poder asumir homocedasticidad.
+
+Para las pruebas de hipótesis mencionadas, se desglosó la hipótesis teórica en 10 hipótesis estadísticas, con sus correspondientes versiones nulas y alternativas. Por un lado, se buscó la existencia de diferencias en el uso de estrategias entre hombres de distinta clase, y por otro lado, entre mujeres de distinta clase.
+
+
+```{r}
+H<-data2[data2$genero=="Hombre",c("comuna","pension","trabajo","inversion","subvencion","redes_sociales")]
+M<-data2[data2$genero=="Mujer",c("comuna","pension","trabajo","inversion","subvencion","redes_sociales")]
+```
+
+<br>
+
+### a. Diferencias de clase entre hombres
+
+<br>
+
+A continuación, realizaremos un ajuste al *dataset*, generando un filtro para que los casos sean únicamente hombres.
+
+```{r echo=FALSE}
+solo.hombres <- data2%>%
+  filter(genero=="Hombre")
+solo.hombres%>%
+  group_by(comuna)%>%
+  summarize(meanmean_pension=mean(pension),
+            sd_pension=sd(pension),
+            mean_trabajo=mean(trabajo),
+            sd_trabajo=sd(trabajo),
+            mean_inversion=mean(inversion),
+            sd_inversion=sd(inversion),
+            mean_subvencion=mean(subvencion),
+            sd_subvencion=sd(subvencion),
+            mean_redes_sociales=mean(redes_sociales),
+            sd_redes_sociales=sd(redes_sociales))
+```
+
+<br>
+
+#### a.1. Intervalo de Confianza del 95% de Hombres Clase Alta para cada Estrategia
+
+<br>
+
+**1. [`pension`]** (media = 0.475, desviación estandar = 0.287)
+
+* Hipotesis nula: La media de [`pension`] en hombres es igual en clase alta y clase baja
+* Hipotesis alternativa: La media de [`pension`] en hombres es distinta en clase alta y clase baja
+
+
+```{r}
+#Cálculo del Margen de Error
+(0.287/sqrt(10-1))*1.96
+
+#Límite inferior y superior del intervalo
+0.475-((0.287/sqrt(10-1))*1.96)
+0.475+((0.287/sqrt(10-1))*1.96)
+
+```
+
+
+**2. [`trabajo`]** (media = 0.404, desviación estandar = 0.354)
+
+
+* Hipotesis nula: La media de [`trabajo`] en hombres es igual en clase alta y clase baja
+* Hipotesis alternativa: La media de [`trabajo`] en hombres es distinta en clase alta y clase baja
+
+
+```{r}
+#Calculo del Margen de Error
+(0.354/sqrt(10-1))*1.96
+
+#Límite inferior y superior del intervalo
+0.404-((0.354/sqrt(10-1))*1.96)
+0.404+((0.354/sqrt(10-1))*1.96)
+```
+
+
+**3. [`inversion`]** (media = 0.242, desviacion estandar = 0.295)
+
+
+* Hipotesis nula: Las varianzas de [`inversion`] en hombres son iguales en clase alta y clase baja
+* Hipotesis alternativa: Las varianzas de [`inversion`] en hombres son distintas en clase alta y clase baja
+
+
+```{r}
+#Calculo del Margen de Error
+(0.295/sqrt(10-1))*1.96
+
+#Límite inferior y superior del intervalo
+0.242-((0.295/sqrt(10-1))*1.96)
+0.242+((0.295/sqrt(10-1))*1.96)
+
+```
+
+
+**4. [`subvencion`]** (media = 0.111, desviación estandar = 0.240)
+
+
+* Hipotesis nula: La media de [`subvencion`] en hombres es igual en clase alta y clase baja
+* Hipotesis alternativa: La media de [`subvencion`] en hombres es distinta en clase alta y clase baja
+
+
+```{r}
+#Calculo del Margen de Error
+(0.240/sqrt(10-1))*1.96
+
+#Límite inferior y superior del intervalo
+0.111-((0.240/sqrt(10-1))*1.96)
+0.111+((0.240/sqrt(10-1))*1.96)
+```
+
+
+**5. [`redes_sociales`]** (media = 0.0688, desviacion estandar = 0.0622)
+
+
+* Hipotesis nula: La media de [`redes_sociales`] en hombres es igual en clase alta y clase baja
+* Hipotesis alternativa: La media de [`redes_sociales`] en hombres es distinta en clase alta y clase baja
+
+
+```{r}
+#Calculo del Margen de Error
+(0.0622/sqrt(10-1))*1.96
+
+#Límite inferior y superior del intervalo
+0.0688-((0.0622/sqrt(10-1))*1.96)
+0.0688+((0.0622/sqrt(10-1))*1.96)
+```
+
+<br>
+
+#### a.2. Intervalo de Confianza del 95% de Hombres Clase Baja para cada estrategia
+
+<br>
+
+**1. [`pension`]** (medida = 0.433, desviación estandar = 0.378)
+
+
+* Hipotesis nula: La media de [`pension`] en hombres es igual en clase alta y clase baja
+* Hipotesis alternativa: La media de [`pension`] en hombres es distinta en clase alta y clase baja
+
+
+```{r}
+#Calculo del Margen de Error
+(0.378/sqrt(15-1))*1.96
+
+#Limite inferior y superior del intervalo
+0.433-((0.378/sqrt(15-1))*1.96)
+0.433+((0.378/sqrt(15-1))*1.96)
+```
+
+
+**2. [`trabajo`]** (media = 0.212, desviacion estandar= 0.366)
+
+
+* Hipotesis nula: La media de [`trabajo`] en hombres es igual en clase alta y clase baja
+* Hipotesis alternativa: La media de [`trabajo`] en hombres es distinta en clase alta y clase baja
+
+
+```{r}
+#Calculo del Margen de Error
+(0.366/sqrt(15-1))*1.96
+
+#Limite inferior y superior del intervalo
+0.212-((0.366/sqrt(15-1))*1.96)
+0.212+((0.366/sqrt(15-1))*1.96)
+```
+
+
+**3. [`inversion`]** (media=0.217, desviacion estandar= 0.298)
+
+
+* Hipotesis nula: Las varianzas de [`inversion`] en hombres son iguales en clase alta y clase baja
+* Hipotesis alternativa: Las varianzas de [`inversion`] en hombres son distintas en clase alta y clase baja
+
+
+```{r}
+#Calculo del Margen de Error
+(0.298/sqrt(15-1))*1.96
+
+#Limite inferior y superior del intervalo
+0.217-((0.298/sqrt(15-1))*1.96)
+0.217+((0.298/sqrt(15-1))*1.96)
+
+```
+
+
+**4. [`subvencion`]** (media=0, desviación estandar = 0)
+
+
+* Hipotesis nula: La media de [`subvencion`] en hombres es igual en clase alta y clase baja
+* Hipotesis alternativa: La media de [`subvencion`] en hombres es distinta en clase alta y clase baja
+
+No hay uso de esta estrategia por parte de hombres de clase baja
+
+
+**5. [`redes_sociales`]** (media=0.104, desviacion estandar=0.107)
+
+
+* Hipotesis nula: La media de [`redes_sociales`] en hombres es igual en clase alta y clase baja
+* Hipotesis alternativa: La media de [`redes_sociales`] en hombres es distinta en clase alta y clase baja
+
+
+```{r}
+#Calculo del Margen de Error
+(0.107/sqrt(15-1))*1.96
+
+#Limite inferior y superior del intervalo
+0.104-((0.107/sqrt(15-1))*1.96)
+0.104+((0.107/sqrt(15-1))*1.96)
+```
+
+
+Los intervalos de ambas clases se solapan en todas las dimensiones; y, por lo tanto, podemos afirmar, con un 95% de confianza, que no existen diferencias estadísticamente significativas entre las estrategias empleadas por hombres de clase baja y clase alta.
+
+<br>
+
+### b. Diferencias de clase en mujeres
+
+<br>
+
+Ahora, se realizará lo mismo que en el caso de los hombre. Se filtrará el *datset* para que los casos que se presenten solo sean mujeres.
+
+```{r message=FALSE, warning=FALSE, include=FALSE, paged.print=FALSE}
+solo.mujeres <- data2%>%
+  filter(genero=="Mujer")
+solo.mujeres%>%
+  group_by(comuna)%>%
+  summarize(mean_pension=mean(pension),
+            sd_pension=sd(pension),
+            mean_trabajo=mean(trabajo),
+            sd_trabajo=sd(trabajo),
+            mean_inversion=mean(inversion),
+            sd_inversion=sd(inversion),
+            mean_subvencion=mean(subvencion),
+            sd_subvencion=sd(subvencion),
+            mean_redes_sociales=mean(redes_sociales),
+            sd_redes_sociales=sd(redes_sociales))
+```
+
+<br>
+
+#### b.1. Intervalo de Confianza del 95% de Mujeres de Clase Alta para cada estrategia
+
+<br>
+
+**1. [`pension`]** (medida = 0.375, desviación estandar = 0.357)
+
+
+* Hipotesis nula: La media de [`pension`] en mujeres es igual en clase alta y clase baja
+* Hipotesis alternativa: La media de [`pension`] en mujeres es distinta en clase alta y clase baja
+
+
+```{r}
+#Calculo del Margen de Error
+(0.357/sqrt(30-1))*1.96
+
+#Limite inferior y superior del intervalo
+0.375-((0.357/sqrt(30-1))*1.96)
+0.375+((0.357/sqrt(30-1))*1.96)
+
+```
+
+
+**2. [`trabajo`]** (media = 0.0806, desviacion estandar= 0.220)
+
+
+* Hipotesis nula: La media de [`trabajo`] en mujeres es igual en clase alta y clase baja
+* Hipotesis alternativa: La media de [`trabajo`] en mujeres es distinta en clase alta y clase baja
+
+
+```{r}
+#Calculo del Margen de Error
+(0.220/sqrt(20-1))*1.96
+
+#Limite inferior y superior del intervalo
+0.0806-((0.220/sqrt(20-1))*1.96)
+0.0806+((0.220/sqrt(20-1))*1.96)
+```
+
+
+**3. [`inversion`]** (media=0.178, desviacion estandar= 0.258)
+
+
+* Hipotesis nula: La media de [`inversion`] en mujeres es igual en clase alta y clase baja
+* Hipotesis alternativa: La media de [`inversion`] en mujeres es distinta en clase alta y clase baja
+
+
+```{r}
+#Calculo del Margen de Error
+(0.258/sqrt(20-1))*1.96
+
+#Limite inferior y superior del intervalo
+0.178-((0.258/sqrt(20-1))*1.96)
+0.178+((0.258/sqrt(20-1))*1.96)
+```
+
+
+**4. [`subvencion`]** (media=0.0444, desviacion estandar= 0.172)
+
+
+* Hipotesis nula: La media de [`subvencion`] en mujeres es igual en clase alta y clase baja
+* Hipotesis alternativa: La media de [`subvencion`] en mujeres es distinta en clase alta y clase baja
+
+
+```{r}
+#Calculo del margen de Error
+(0.172/sqrt(20-1))*1.96
+
+#Limite inferior y superior del intervalo
+0.0444-((0.172/sqrt(20-1))*1.96)
+0.0444+((0.172/sqrt(20-1))*1.96)
+```
+
+
+**5. [`redes_sociales`]** (media=0.104, desviacion estandar=0.0993)
+
+
+* Hipotesis nula: La media de [`redes_sociales`] en mujeres es igual en clase alta y clase baja
+* Hipotesis alternativa: La media de [`redes_sociales`] en mujeres es distinta en clase alta y clase baja
+
+
+```{r}
+#Calculo del Margen de Error
+(0.0993/sqrt(20-1))*1.96
+
+#Limite inferior y superior del intervalo
+0.104-((0.0993/sqrt(20-1))*1.96)
+0.104+((0.0993/sqrt(20-1))*1.96)
+```
+
+<br>
+
+#### b.2. Intervalo de Confianza del 95% de Mujeres de Clase Baja para cada estrategia
+
+<br>
+
+**1. [`pension`]** (media = 0.217, desviación estandar = 0.336)
+
+
+* Hipotesis nula: La media de [`pension`] en mujeres es igual en clase alta y clase baja
+* Hipotesis alternativa: La media de [`pension`] en mujeres es distinta en clase alta y clase baja
+
+
+```{r}
+#Cálculo del Margen de Error
+(0.336/sqrt(15-1))*1.96
+#Límite inferior y superior del intervalo
+0.217-((0.336/sqrt(15-1))*1.96)
+0.217+((0.336/sqrt(15-1))*1.96)
+```
+
+
+**2. [`trabajo`]** (media = 0.167, desviación estandar = 0.347)
+
+
+* Hipotesis nula: La media de [`trabajo`] en mujeres es igual en clase alta y clase baja
+* Hipotesis alternativa: La media de [`trabajo`] en mujeres es distinta en clase alta y clase baja
+
+
+```{r}
+#Calculo del Margen de Error
+(0.347/sqrt(15-1))*1.96
+
+#Límite inferior y superior del intervalo
+0.167-((0.347/sqrt(15-1))*1.96)
+0.167+((0.347/sqrt(15-1))*1.96)
+```
+
+
+**3. [`inversion`]** (media = 0.0444, desviacion estandar = 0.172)
+
+
+* Hipotesis nula: La media de [`inversion`] en mujeres es igual en clase alta y clase baja
+* Hipotesis alternativa: La media de [`inversion`] en mujeres es distinta en clase alta y clase baja
+
+
+```{r}
+#Calculo del Margen de Error
+(0.172/sqrt(15-1))*1.96
+
+#Límite inferior y superior del intervalo
+0.0444-((0.172/sqrt(15-1))*1.96)
+0.0444+((0.172/sqrt(15-1))*1.96)
+```
+
+
+**4. [`subvencion`]** (media = 0.444, desviación estandar = 0.328)
+
+
+* Hipotesis nula: La media de [`subvencion`] en mujeres es igual en clase alta y clase baja
+* Hipotesis alternativa: La media de [`subvencion`] en mujeres es distinta en clase alta y clase baja
+
+
+```{r}
+#Calculo del Margen de Error
+(0.328/sqrt(15-1))*1.96
+
+#Límite inferior y superior del intervalo
+0.444-((0.328/sqrt(15-1))*1.96)
+0.444+((0.328/sqrt(15-1))*1.96)
+```
+
+
+**5. [`redes_sociales`]** (media = 0.233, desviacion estandar = 0.114)
+
+
+* Hipotesis nula: La media de [`redes_sociales`] en mujeres es igual en clase alta y clase baja
+* Hipotesis alternativa: La media de [`redes_sociales`] en mujeres es distinta en clase alta y clase baja
+
+
+```{r}
+#Calculo del Margen de Error
+(0.114/sqrt(15-1))*1.96
+
+#Límite inferior y superior del intervalo
+0.233-((0.114/sqrt(15-1))*1.96)
+0.233+((0.114/sqrt(15-1))*1.96)
+```
+
+
+Los intervalos de [`redes_sociales`] y [`subvencion`] no se solapan, y, por lo tanto, podemos afirmar, con un 95% de confianza, que existen diferencias estadísticamente significativas entre las estrategias empleadas por mujeres de clase baja y clase altas, en dichas dimensiones.
+
+***
