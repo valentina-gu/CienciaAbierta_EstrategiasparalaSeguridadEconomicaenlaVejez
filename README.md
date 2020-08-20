@@ -102,7 +102,7 @@ El aporte específico que este trabajo realiza al campo de estudio radica en, po
   - análisis_estrategias para la seguridad económica en la vejez: Pruebas de hipótesis (test de
     D de Cohen, Test de Welch y Test de Leven), gráficos y tablas.   
     
--**output**:  tablas, gráficos y otros elementos que fueron producidos mediante el manejo de datos. Para esta investigación esta carpeta es redundante, debido a que tablas y gráficos se encuentran en el archivo Rmd de análisis.Debido al protocolo decidimos ponerla de todas formas. 
+-**output**:  tablas, gráficos y otros elementos que fueron producidos mediante el manejo de datos. Para esta investigación esta carpeta es redundante, debido a que tablas y gráficos se encuentran en el archivo Rmd de análisis.Por  lo que a pesar de corresponder al protocolo, decidimos no ponerla. 
 
 -**readme.doc** : archivo general de introducción
 
