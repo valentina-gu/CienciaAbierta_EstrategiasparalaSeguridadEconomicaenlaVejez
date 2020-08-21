@@ -77,9 +77,12 @@ El aporte específico que este trabajo realiza al campo de estudio radica en, po
   - data: bases de datos
    
        -original
-   		- data: base de datos original (en formato excel)
-       -proc
-       		- data2: base de datos  que se ocupara para el análisis (formato R). 
+   		
+		- data: base de datos original (en formato excel)
+      
+      -proc
+       		
+		- data2: base de datos  que se ocupara para el análisis (formato R). 
              
 -**processing**:  preparación de datos
 
