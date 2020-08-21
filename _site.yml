@@ -1,20 +1,19 @@
 
-
 name: "Ciencia Abierta"
+output_dir: "." 
 navbar:
-title: "Estrategias Estrategias para la Seguridad Economica en la Vejez"
-left:
- - text: "Home"
-   href: index.html
- - text: "Paper"
-   href: Estrategias_para_la_seguridad_economica_en-_la_vejez.html
-right:
- - icon: fa-github fa-lg 
-   href: https://github.com/valentina-gu/CienciaAbierta_EstrategiasparalaSeguridadEconomicaenlaVejez
- - text: "OSF"
-   href: https://osf.io/qbsmz/
-output: 
- html_document:
-  Theme: sandstones # yeti 
-  css: "styles.css"
-
+  title: "Estrategias Estrategias para la Seguridad Economica en la Vejez"
+  right:
+    - text: "Home"
+      href: "index.html"
+    - text: "Artículo"
+      href: "Estrategias_para_la_seguridad_economica_en-_la_vejez.html"
+    - text: ""
+      icon: fa-github fa-lg
+      href: https://github.com/valentina-gu/CienciaAbierta_EstrategiasparalaSeguridadEconomicaenlaVejez
+    - text: "OSF"
+      href: https://osf.io/qbsmz/
+output:
+  html_document:
+    theme: readable
+    css: 'styles.css'
