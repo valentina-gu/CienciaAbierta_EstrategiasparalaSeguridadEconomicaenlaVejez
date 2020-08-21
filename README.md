@@ -108,11 +108,24 @@ El aporte específico que este trabajo realiza al campo de estudio radica en, po
 
 -**Estrategias_para_la_seguridad_economica_en_la_vejez** : el artículo/paper final.
 
--**proyecto_ciencia_abierta** : archivo r.project
+-**proyecto_ciencia_abierta** : archivo r.project.
+
+-**site_libes**: Librerias para generar la pagina web.
+
+-**index.rmd**: Archivo generado para poder hacer la página web, contiene lo que aparecera al inicio de la página.
+-**_site.yml** : Archivo generado para poder hacer la página web, contiene las indicaciones para la estructura de esta. 
+
+-**_site** : Carpeta generada por el R, contiene todos los archivos necesarios para generar el stio web. Por lo que algunos archivos se repiten, pero por medidas de precaución y reproducibilidad preferimos dejarla a pesar de que hay archicos que se repiten. 
+<br>
+
+## d. Página Web del proyecto
+<br>
+
+https://valentina-gu.github.io/EstrategiasparalaSeguridadEconomicaenlaVejez/
 
 <br>
 
-## d. Contacto autoras de la investigación
+## e. Contacto autoras de la investigación
 
 <br>
 
