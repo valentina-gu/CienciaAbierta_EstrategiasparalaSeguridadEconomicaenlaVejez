@@ -14,7 +14,7 @@ Para su realización, se utilizó un cuestionario online (Google Form) de 43 pre
 
 <br>
 
-## a. Índice del paper: Estrategias para la Seguridad Económica en la Vejez
+## a. Índice del artículo: Estrategias para la Seguridad Económica en la Vejez
 
 <br>
 
@@ -77,11 +77,9 @@ El aporte específico que este trabajo realiza al campo de estudio radica en, po
   - data: bases de datos
    
        -original
-       
-             - data: base de datos original (en formato excel)
+   		- data: base de datos original (en formato excel)
        -proc
-       
-             - data2: base de datos  que se ocupara para el análisis (formato R). 
+       		- data2: base de datos  que se ocupara para el análisis (formato R). 
              
 -**processing**:  preparación de datos
 
