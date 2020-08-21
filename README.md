@@ -18,7 +18,7 @@ En Chile, la cobertura de las jubilaciones se estructura bajo un sistema de capi
 
 <br>
 
-En virtud de ello, la presente investigación busca dar cuenta de las diferentes estrategias empleadas por individuos en edad de jubilación para alcanzar la seguridad económica -o, según el caso, las condiciones mínimas de supervivencia- acorde a su posición de género y de clase, en las comunas de Lo Barnechea y San Bernardo. El objetivo de la investigación es identificar las diferencias entre las tendencias de utilización de estrategias económicas en la vejez según género y clase social en Santiago en 2018. Con este fin, la pregunta de investigación es la siguiente: ¿Cuáles son las diferencias en las tendencias de uso de estrategias económicas durante la vejez según género y clase social en Santiago, 2018?
+En virtud de ello, la presente investigación busca dar cuenta de las diferentes estrategias empleadas por individuos en edad de jubilación para alcanzar la seguridad económica -o, según el caso, las condiciones mínimas de supervivencia- acorde a su posición de género y de clase, en las comunas de Lo Barnechea y Pedro Aguirre Cerda. El objetivo de la investigación es identificar las diferencias entre las tendencias de utilización de estrategias económicas en la vejez según género y clase social en Santiago en 2018. Con este fin, la pregunta de investigación es la siguiente: ¿Cuáles son las diferencias en las tendencias de uso de estrategias económicas durante la vejez según género y clase social en Santiago, 2018?
 
 <br>
 
